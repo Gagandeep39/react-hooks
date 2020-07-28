@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import IngredientForm from './IngredientForm';
 import Search from './Search';
@@ -7,21 +7,15 @@ import IngredientList from './IngredientList';
 function Ingredients() {
   const [ingredientsState, setIngredientsState] = useState([]);
 
-  useEffect(() => {
-    fetch('https://emerald-mission-191715.firebaseio.com/ingredients.json')
-      .then((response) => response.json())
-      .then((responseData) => {
-        const loadingIngredients = [];
-        for (const key in responseData) {
-          loadingIngredients.push({
-            id: key,
-            title: responseData[key].title,
-            amount: responseData[key].amount,
-          });
-        }
-        setIngredientsState(loadingIngredients);
-      });
+  // Using callback will cache the function and revent recreation in a re render cycle
+  const filterIngredientHandler = useCallback((filteredIngredients) => {
+    setIngredientsState(filteredIngredients);
   }, []);
+
+  // Will cause Infinite rerendering 
+  // const filterIngredientHandler = (filteredIngredients) => {
+  //   setIngredientsState(filteredIngredients);
+  // };
 
   const addIngredientHandler = (newIngredients) => {
     fetch('https://emerald-mission-191715.firebaseio.com/ingredients.json', {
@@ -51,7 +45,7 @@ function Ingredients() {
       <IngredientForm onAddIngredient={addIngredientHandler} />
 
       <section>
-        <Search />
+        <Search onLoadIngredients={filterIngredientHandler} />
         {/* Need to add list here! */}
         <IngredientList
           ingredients={ingredientsState}
