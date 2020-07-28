@@ -40,6 +40,19 @@ function Ingredients() {
       });
   };
 
+  const removeIngredientHandler = ingredientId => {
+    fetch(`https://emerald-mission-191715.firebaseio.com/ingredients/${ingredientId}.json`, {
+      method: 'DELETE'
+    }).then(response => {
+      console.log('Executed');
+      console.log(ingredientsState);
+      setIngredientsState(prevIngredients =>
+        prevIngredients.filter(ingredient => ingredient.id !== ingredientId)
+      );
+      console.log(ingredientsState);
+    })
+  }
+
   return (
     <div className='App'>
       <IngredientForm onAddIngredient={addIngredientHandler} />
@@ -49,7 +62,7 @@ function Ingredients() {
         {/* Need to add list here! */}
         <IngredientList
           ingredients={ingredientsState}
-          onRemoveItem={() => {}}
+          onRemoveItem={removeIngredientHandler}
         />
       </section>
     </div>
