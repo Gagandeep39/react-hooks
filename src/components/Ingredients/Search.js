@@ -13,7 +13,7 @@ const Search = React.memo((props) => {
 
   // Now the function will check if the inout has changed in a 0.5 sec interval and then run nstead of sending request in every keystroke
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       if(filterState === searchRef.current.value) {
         console.log('Executed');
     const query =
@@ -37,6 +37,9 @@ const Search = React.memo((props) => {
       });
       }
     }, 500);
+    return () => {
+      clearTimeout(timer);
+    }
   }, [filterState, onLoadIngredients, searchRef]);
   return (
     <section className='search'>
