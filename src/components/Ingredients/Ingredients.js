@@ -3,10 +3,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import IngredientForm from './IngredientForm';
 import Search from './Search';
 import IngredientList from './IngredientList';
+import ErrorModal from '../UI/ErrorModal';
 
 function Ingredients() {
   const [ingredientsState, setIngredientsState] = useState([]);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
 
   // Using callback will cache the function and revent recreation in a re render cycle
   const filterIngredientHandler = useCallback((filteredIngredients) => {
@@ -40,12 +42,12 @@ function Ingredients() {
           // Attaching id to new ingredient and adding it to the state
           { id: responseData.name, ...newIngredients },
         ]);
-      });
+      }).catch(error => setError(error.message));
   };
 
   const removeIngredientHandler = ingredientId => {
     setIsLoading(true);
-    fetch(`https://emerald-mission-191715.firebaseio.com/ingredients/${ingredientId}.json`, {
+    fetch(`https://emerald-mission-191715.firebaseio.com/ingredients/${ingredientId}.jsona`, {
       method: 'DELETE'
     }).then(response => {
       setIsLoading(false)
@@ -55,11 +57,17 @@ function Ingredients() {
         prevIngredients.filter(ingredient => ingredient.id !== ingredientId)
       );
       console.log(ingredientsState);
-    })
+    }).catch(error => setError(error.message));
+  }
+
+  const clearErrorHandler = () => {
+    setError();
+    setIsLoading(false);
   }
 
   return (
     <div className='App'>
+      { error ? <ErrorModal onClose={clearErrorHandler}> {error} </ErrorModal> : null }
       <IngredientForm onAddIngredient={addIngredientHandler} loading={isLoading} />
 
       <section>
