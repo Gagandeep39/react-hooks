@@ -9,10 +9,8 @@ const IngredientForm = React.memo((props) => {
     // ...
   };
 
-  const [inputState, setInputState] = useState({
-    title: '',
-    amount: '', // Always better to use as a string rather than converting
-  });
+  const [titleState, setTitleState] = useState({ title: '' });
+  const [amountState, setAmountState] = useState({ amount: '' });
 
   return (
     <section className='ingredient-form'>
@@ -23,16 +21,11 @@ const IngredientForm = React.memo((props) => {
             <input
               type='text'
               id='title'
-              value={inputState.title}
+              value={titleState.title}
               onChange={(event) => {
-                // First we store a value in a consttant
-                // The interior arrow fn cannot directly access event hence its value must be in a constant
-                const newTitle = event.target.value;
-                // Hooks are required to update the state of all data in itinstead of justsingle parameter
-                setInputState((previousInputState) => ({
-                  title: newTitle,
-                  amount: previousInputState.amount,
-                }));
+                setTitleState({
+                  title: event.target.value,
+                });
               }}
             />
           </div>
@@ -41,13 +34,11 @@ const IngredientForm = React.memo((props) => {
             <input
               type='number'
               id='amount'
-              value={inputState.amount}
+              value={amountState.amount}
               onChange={(event) => {
-                const newAmount = event.target.value;
-                setInputState((previousInputState) => ({
-                  title: previousInputState.title,
-                  amount: newAmount,
-                }));
+                setAmountState({
+                  amount: event.target.value,
+                });
               }}
             />
           </div>
