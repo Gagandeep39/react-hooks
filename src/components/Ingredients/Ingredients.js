@@ -6,6 +6,7 @@ import IngredientList from './IngredientList';
 
 function Ingredients() {
   const [ingredientsState, setIngredientsState] = useState([]);
+  const [isLoading, setIsLoading] = useState(false)
 
   // Using callback will cache the function and revent recreation in a re render cycle
   const filterIngredientHandler = useCallback((filteredIngredients) => {
@@ -18,6 +19,7 @@ function Ingredients() {
   // };
 
   const addIngredientHandler = (newIngredients) => {
+    setIsLoading(true);
     fetch('https://emerald-mission-191715.firebaseio.com/ingredients.json', {
       method: 'POST',
       body: JSON.stringify(newIngredients),
@@ -27,6 +29,7 @@ function Ingredients() {
         // Will generate and return a promise, will also add ID
         // This is just an HTTP response, not the actual JSON. To extract the JSON body content from the response, we use the json()
         (response) => {
+          setIsLoading(false)
           return response.json();
         }
       )
@@ -41,9 +44,11 @@ function Ingredients() {
   };
 
   const removeIngredientHandler = ingredientId => {
+    setIsLoading(true);
     fetch(`https://emerald-mission-191715.firebaseio.com/ingredients/${ingredientId}.json`, {
       method: 'DELETE'
     }).then(response => {
+      setIsLoading(false)
       console.log('Executed');
       console.log(ingredientsState);
       setIngredientsState(prevIngredients =>
@@ -55,7 +60,7 @@ function Ingredients() {
 
   return (
     <div className='App'>
-      <IngredientForm onAddIngredient={addIngredientHandler} />
+      <IngredientForm onAddIngredient={addIngredientHandler} loading={isLoading} />
 
       <section>
         <Search onLoadIngredients={filterIngredientHandler} />
