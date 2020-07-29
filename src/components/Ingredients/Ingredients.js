@@ -19,11 +19,27 @@ const ingredientReducer = (currentIngredients, action) => {
   }
 }
 
+const httpReducer = (currHttpState, action) => {
+  switch (action.type) {
+    case 'SEND':
+      return { loading: true, error: null };
+    case 'RESPONSE':
+      return {...currHttpState, loading: false};
+    case 'ERROR':
+      return { loading: false, error: action.errorData };
+    case 'CLEAR':
+      return {...currHttpState, error: null};
+    default:
+      throw new Error('Shouldnt be reached');
+  }
+}
+
 function Ingredients() {
   const [ingredientsState, dispatch] = useReducer(ingredientReducer, [])
+  const [httpState, dispatchHttp] = useReducer(httpReducer, { loading: false, error: null });
   // const [ingredientsState, setIngredientsState] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState();
 
   // Using callback will cache the function and revent recreation in a re render cycle
   const filterIngredientHandler = useCallback((filteredIngredients) => {
@@ -40,7 +56,8 @@ function Ingredients() {
   // };
 
   const addIngredientHandler = (newIngredients) => {
-    setIsLoading(true);
+    dispatchHttp({type: 'SEND'});
+    // setIsLoading(true);
     fetch('https://emerald-mission-191715.firebaseio.com/ingredients.json', {
       method: 'POST',
       body: JSON.stringify(newIngredients),
@@ -50,7 +67,8 @@ function Ingredients() {
         // Will generate and return a promise, will also add ID
         // This is just an HTTP response, not the actual JSON. To extract the JSON body content from the response, we use the json()
         (response) => {
-          setIsLoading(false)
+          dispatchHttp({type: 'RESPONSE'});
+          // setIsLoading(false)
           return response.json();
         }
       )
@@ -65,15 +83,17 @@ function Ingredients() {
           type: 'ADD',
           ingredient: { id: responseData.name, ...newIngredients }
         })
-      }).catch(error => setError(error.message));
+      }).catch(error => dispatchHttp({type: 'ERROR', error: error.message}));
   };
 
   const removeIngredientHandler = ingredientId => {
-    setIsLoading(true);
+    // setIsLoading(true);
+    dispatchHttp({type: 'SEND'});
     fetch(`https://emerald-mission-191715.firebaseio.com/ingredients/${ingredientId}.json`, {
       method: 'DELETE'
     }).then(response => {
-      setIsLoading(false)
+      // setIsLoading(false)
+    dispatchHttp({type: 'RESPONSE'});
       console.log('Executed');
       console.log(ingredientsState);
       // setIngredientsState(prevIngredients =>
@@ -84,18 +104,19 @@ function Ingredients() {
         id: ingredientId
       })
       console.log(ingredientsState);
-    }).catch(error => setError(error.message));
+    }).catch(error => dispatchHttp({type:'ERROR', error: error.message}));
   }
 
   const clearErrorHandler = () => {
-    setError();
-    setIsLoading(false);
+    // setError();
+    // setIsLoading(false);
+    dispatchHttp({type: 'CLEAR'})
   }
 
   return (
     <div className='App'>
-      { error ? <ErrorModal onClose={clearErrorHandler}> {error} </ErrorModal> : null }
-      <IngredientForm onAddIngredient={addIngredientHandler} loading={isLoading} />
+      { httpState.error ? <ErrorModal onClose={clearErrorHandler}> {httpState.error} </ErrorModal> : null }
+      <IngredientForm onAddIngredient={addIngredientHandler} loading={httpState.isLoading} />
 
       <section>
         <Search onLoadIngredients={filterIngredientHandler} />
