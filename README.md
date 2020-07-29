@@ -1,68 +1,62 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React Hooks
 
-## Available Scripts
+- [React Hooks](#react-hooks)
+  - [Deployment](#deployment)
+  - [React Hooks](#react-hooks-1)
+    - [`useState`](#usestate)
+    - [Functional Component](#functional-component)
+    - [Classs based component](#classs-based-component)
 
-In the project directory, you can run:
+## Deployment 
+Test the application at https://gagandeep39.github.io/react-hooks
 
-### `npm start`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## React Hooks
+- Used in Functional COmponents
+- JS FUnctions that can only be used from inside functonal compoents
+- Naming convection `useXYZ()`
+- Exposes state mnagamenet functionalitie to functional component
+- Nothing to do with lifecycle hooks
+- Introduced in 16.8
+- Note
+  - Must not be used in react specific nested function
+  - Must only be used in functional components
+  - Cannot be iitialized in loops and if statement
+- Important hooks
+  - `useState` - To manage State
+  - `useEffect` - Execute lifecycle method in a functional component. Executes everytime after the component is re rendered (componentDidUpdate lifecycle to be precise)
+  - `useContext` - 
+  - `useCallback` - Caches the function to prevent rerender cycle
+  - `useRef` - Reference object for an element
+  - `useReducer` - When one state depends on another, write a cleaner logic. COnsists of a current state and dispatcher to change states
+  - `useMemo` - Performance improvement. SImilar to React.memo. Also prevent rerendering. Must be used to prevent mmultiple computation due to re rendering
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+### `useState`
+- Provds state management in functional component
+- To update a statement we are required to update the state of all values associated with it
+- Hence we must use a different variable for different data eg. 2 different variables for 2 different input box
+- In case of Multiple values
+  ```js
+  setInputState((previousInputState) => ({
+    title: newTitle,
+    amount: previousInputState.amount,
+  }));
+  ```
+  - Here we have to access previous state and set the current state as previous state for values that arent changing
+- In case of single vaue 
+  ```js
+  const [amountState, setAmountState] = useState('');
+  setAmountState('sxdcfvgthynju')
+  ```
 
-### `npm test`
+### Functional Component
+- Props in and JSX output
+- Used for presentation 
+- Used for One purpose
+- Handler is provided as prop
+- State can be change in a class that will update the view component
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+### Classs based component
+- Uses props and state
+- BUssiness logic goes here
+- Orchestrate components (Arrange components)
